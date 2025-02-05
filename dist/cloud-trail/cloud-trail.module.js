@@ -12,12 +12,15 @@ const typeorm_1 = require("@nestjs/typeorm");
 const cloudTrail_entity_1 = require("../entities/cloudTrail.entity");
 const cloud_trail_service_1 = require("./cloud-trail.service");
 const cloud_trail_controller_1 = require("./cloud-trail.controller");
+const security_event_entity_1 = require("../security-events/security-event.entity");
 let CloudTrailModule = class CloudTrailModule {
 };
 exports.CloudTrailModule = CloudTrailModule;
 exports.CloudTrailModule = CloudTrailModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([cloudTrail_entity_1.CloudTrailEvent])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([cloudTrail_entity_1.CloudTrailEvent, security_event_entity_1.SecurityEvent]),
+        ],
         providers: [cloud_trail_service_1.CloudTrailService],
         controllers: [cloud_trail_controller_1.CloudTrailController],
         exports: [cloud_trail_service_1.CloudTrailService],

@@ -58,12 +58,11 @@ export class CloudTrailService {
       this.securityEventRepository.save(securityEvent);
     }
 }
-/*
-saveEvent: We first save the CloudTrail event to the database.
-filterSecurityEvents: This method checks if the event name or 
-source matches any predefined security criteria. If it does, we create and save a SecurityEvent.
-Criteria for security events: We filter based on event names like ConsoleLogin, 
-AssumeRoleWithSAML, etc., and also check for iam in the eventSource as an additional security flag.
 
-*/
+//saveEvent: We first save the CloudTrail event to the database.
+//filterSecurityEvents: This method checks if the event name or 
+//source matches any predefined security criteria. If it does, we create and save a SecurityEvent.
+//Criteria for security events: We filter based on event names like ConsoleLogin, 
+//AssumeRoleWithSAML, etc., and also check for iam in the eventSource as an additional security flag.
+
 }
