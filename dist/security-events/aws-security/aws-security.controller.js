@@ -12,16 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AwsSecurityController = void 0;
 const common_1 = require("@nestjs/common");
 const aws_security_service_1 = require("./aws-security.service");
+const aws_cloudtrail_service_1 = require("./aws-cloudtrail.service");
 let AwsSecurityController = class AwsSecurityController {
-    constructor(awsSecurityService) {
+    constructor(awsSecurityService, awsCloudTrailService) {
         this.awsSecurityService = awsSecurityService;
+        this.awsCloudTrailService = awsCloudTrailService;
     }
     async fetchCloudTrailEvents() {
-        await this.awsSecurityService.fetchCloudTrailEvents();
-        return { message: 'Fetching CloudTrail events...' };
+        try {
+            await this.awsSecurityService.fetchCloudTrailEvents();
+            return { message: 'Fetching CloudTrail events...' };
+        }
+        catch (error) {
+            console.error('Error fetching CloudTrail events:', error);
+            throw new common_1.HttpException('Failed to fetch CloudTrail events', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async getEvents() {
-        return this.awsSecurityService.getRecentEvents();
+        try {
+            const events = await this.awsCloudTrailService.getRecentSecurityEvents();
+            return events;
+        }
+        catch (error) {
+            console.error('Error fetching security events:', error);
+            throw new common_1.HttpException('Damn! Failed to retrieve security events', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.AwsSecurityController = AwsSecurityController;
@@ -39,6 +54,7 @@ __decorate([
 ], AwsSecurityController.prototype, "getEvents", null);
 exports.AwsSecurityController = AwsSecurityController = __decorate([
     (0, common_1.Controller)('aws-security'),
-    __metadata("design:paramtypes", [aws_security_service_1.AwsSecurityService])
+    __metadata("design:paramtypes", [aws_security_service_1.AwsSecurityService,
+        aws_cloudtrail_service_1.AwsCloudTrailService])
 ], AwsSecurityController);
 //# sourceMappingURL=aws-security.controller.js.map

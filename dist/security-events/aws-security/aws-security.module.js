@@ -12,6 +12,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const aws_security_service_1 = require("./aws-security.service");
 const aws_security_controller_1 = require("./aws-security.controller");
 const security_event_entity_1 = require("../security-event.entity");
+const aws_cloudtrail_service_1 = require("./aws-cloudtrail.service");
 let AwsSecurityModule = class AwsSecurityModule {
 };
 exports.AwsSecurityModule = AwsSecurityModule;
@@ -19,7 +20,7 @@ exports.AwsSecurityModule = AwsSecurityModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([security_event_entity_1.SecurityEvent])],
         controllers: [aws_security_controller_1.AwsSecurityController],
-        providers: [aws_security_service_1.AwsSecurityService],
+        providers: [aws_security_service_1.AwsSecurityService, aws_cloudtrail_service_1.AwsCloudTrailService],
         exports: [aws_security_service_1.AwsSecurityService],
     })
 ], AwsSecurityModule);
