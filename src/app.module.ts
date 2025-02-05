@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { SecurityEvent } from './security-events/security-event.entity';
 import { AwsSecurityService } from './security-events/aws-security/aws-security.service';
 import { AwsSecurityController } from './security-events/aws-security/aws-security.controller';
+import { AwsSecurityModule } from './security-events/aws-security/aws-security.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { AwsSecurityController } from './security-events/aws-security/aws-securi
         synchronize: true, // Auto-syncs DB schema (disable in production)
       }),
     }),
-    TypeOrmModule.forFeature([SecurityEvent]), // Registering the security event entity
+    TypeOrmModule.forFeature([SecurityEvent]),
+    AwsSecurityModule, // Registering the security event entity
   ],
   controllers: [AppController, AwsSecurityController],
   providers: [AppService, AwsSecurityService],
