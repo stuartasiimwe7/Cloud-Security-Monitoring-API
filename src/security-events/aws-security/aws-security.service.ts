@@ -3,11 +3,13 @@ import * as AWS from 'aws-sdk';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SecurityEvent } from '../security-event.entity';
+import { CloudTrailClient, LookupEventsCommand } from "@aws-sdk/client-cloudtrail";
 
 @Injectable()
 export class AwsSecurityService {
   private cloudTrail: AWS.CloudTrail;
   private logger = new Logger(AwsSecurityService.name);
+  private cloudTrailClient: CloudTrailClient;
 
   constructor(
     @InjectRepository(SecurityEvent)
@@ -15,6 +17,7 @@ export class AwsSecurityService {
   ) {
     AWS.config.update({ region: process.env.AWS_REGION });
     this.cloudTrail = new AWS.CloudTrail();
+    this.cloudTrailClient = new CloudTrailClient({ region: process.env.AWS_REGION });
   }
 
   async fetchCloudTrailEvents(): Promise<void> {
@@ -41,6 +44,12 @@ export class AwsSecurityService {
     } catch (error) {
       this.logger.error('Error fetching CloudTrail events:', error);
     }
+  }
+  
+  async getRecentEvents(){
+    const command = new LookupEventsCommand({ /*MaxResults: 5*/ });
+    const response = await this.cloudTrailClient.send(command);
+    return response.Events;
   }
   
 }
