@@ -20,6 +20,7 @@ exports.CloudTrailModule = CloudTrailModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([cloudTrail_entity_1.CloudTrailEvent])],
         providers: [cloud_trail_service_1.CloudTrailService],
         controllers: [cloud_trail_controller_1.CloudTrailController],
+        exports: [cloud_trail_service_1.CloudTrailService],
     })
 ], CloudTrailModule);
 //# sourceMappingURL=cloud-trail.module.js.map
