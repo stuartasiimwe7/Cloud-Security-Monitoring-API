@@ -66,3 +66,4 @@ Criteria for security events: We filter based on event names like ConsoleLogin,
 AssumeRoleWithSAML, etc., and also check for iam in the eventSource as an additional security flag.
 
 */
+}
