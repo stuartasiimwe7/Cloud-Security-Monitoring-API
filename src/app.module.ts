@@ -4,8 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SecurityEvent } from './security-events/security-event.entity';
-import { AwsSecurityService } from './security-events/aws-security/aws-security.service';
-import { AwsSecurityController } from './security-events/aws-security/aws-security.controller';
+//import { AwsSecurityService } from './security-events/aws-security/aws-security.service';
+//import { AwsSecurityController } from './security-events/aws-security/aws-security.controller';
 import { AwsSecurityModule } from './security-events/aws-security/aws-security.module';
 
 @Module({
@@ -26,7 +26,7 @@ import { AwsSecurityModule } from './security-events/aws-security/aws-security.m
     TypeOrmModule.forFeature([SecurityEvent]),
     AwsSecurityModule, // Registering the security event entity
   ],
-  controllers: [AppController, AwsSecurityController],
-  providers: [AppService, AwsSecurityService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

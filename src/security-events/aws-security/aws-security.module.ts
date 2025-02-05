@@ -5,5 +5,6 @@ import { AwsSecurityController } from "./aws-security.controller";
 @Module({
   controllers: [AwsSecurityController],
   providers: [AwsSecurityService],
+  exports: [AwsSecurityService],
 })
 export class AwsSecurityModule {}
