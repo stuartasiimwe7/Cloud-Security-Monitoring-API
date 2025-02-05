@@ -6,14 +6,14 @@ This project is a Cloud Security Monitoring API built with TypeScript and NestJS
 
 ## Features
 - **Security Event API**: Fetch security logs from AWS CloudTrail, IAM, and Config.
-- **Log Storage**: Store logs in MongoDB or PostgreSQL.
+- **Log Storage**: Store logs in PostgreSQL (or MongoDB).
 - **REST API**: Expose endpoints to fetch security violations.
 - **Analytics Dashboard**: Visualize security events using Grafana.
 - **JWT Authentication**: Secure access to the API.
 
 ## Tech Stack
 - **Backend**: TypeScript + NestJS
-- **Cloud SDKs**: AWS SDK (CloudTrail, IAM), GCP/Azure SDK (optional)
+- **Cloud SDKs**: AWS SDK (CloudTrail, IAM)
 - **Database**: PostgreSQL
 - **Logging**: Prometheus + Grafana
 
