@@ -26,7 +26,7 @@ export class AwsCloudTrailService {
       return response.Events || [];
     } catch (error) {
       console.error('Error fetching CloudTrail events:', error);
-      throw error;
+      throw new Error('Damn! It failed! Try again - Later');
     }
   }
 }
