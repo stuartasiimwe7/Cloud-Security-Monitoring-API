@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SecurityEvent } from './security-events/security-event.entity';
+import { AwsSecurityService } from './security-events/aws-security/aws-security.service';
+import { AwsSecurityController } from './security-events/aws-security/aws-security.controller';
 
 @Module({
   imports: [
@@ -17,12 +19,12 @@ import { SecurityEvent } from './security-events/security-event.entity';
         type: 'postgres',
         url: configService.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true, // ⚠️ Auto-syncs DB schema (disable in production)
+        synchronize: true, // Auto-syncs DB schema (disable in production)
       }),
     }),
     TypeOrmModule.forFeature([SecurityEvent]), // Registering the security event entity
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, AwsSecurityController],
+  providers: [AppService, AwsSecurityService],
 })
 export class AppModule {}
