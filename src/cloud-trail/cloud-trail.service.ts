@@ -40,7 +40,7 @@ export class CloudTrailService {
       'CreateUser',
       'DeleteBucket',
       // You can add more security-related event names here...
-    ];
+  ];
 
     // Check if the event name is in the security event criteria
     if (securityEventCriteria.includes(cloudTrailEvent.eventName) || cloudTrailEvent.eventSource.includes('iam')) {
@@ -56,6 +56,7 @@ export class CloudTrailService {
 
       // Save the SecurityEvent to the database
       this.securityEventRepository.save(securityEvent);
+    }
 }
 /*
 saveEvent: We first save the CloudTrail event to the database.

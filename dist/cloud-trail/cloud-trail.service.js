@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const cloudTrail_entity_1 = require("../entities/cloudTrail.entity");
+const security_event_entity_1 = require("../security-events/security-event.entity");
 let CloudTrailService = class CloudTrailService {
-    constructor(cloudTrailEventRepository) {
+    constructor(cloudTrailEventRepository, securityEventRepository) {
         this.cloudTrailEventRepository = cloudTrailEventRepository;
+        this.securityEventRepository = securityEventRepository;
     }
     async saveEvent(eventData) {
         const cloudTrailEvent = this.cloudTrailEventRepository.create({
@@ -30,13 +32,36 @@ let CloudTrailService = class CloudTrailService {
             username: eventData.Username || eventData.userIdentity?.userName || 'Unknown',
             cloudTrailEvent: eventData,
         });
-        return await this.cloudTrailEventRepository.save(cloudTrailEvent);
+        const savedCloudTrailEvent = await this.cloudTrailEventRepository.save(cloudTrailEvent);
+        this.filterSecurityEvents(savedCloudTrailEvent);
+        return savedCloudTrailEvent;
+    }
+    filterSecurityEvents(cloudTrailEvent) {
+        const securityEventCriteria = [
+            'ConsoleLogin',
+            'AssumeRoleWithSAML',
+            'CreateUser',
+            'DeleteBucket',
+        ];
+        if (securityEventCriteria.includes(cloudTrailEvent.eventName) || cloudTrailEvent.eventSource.includes('iam')) {
+            const securityEvent = this.securityEventRepository.create({
+                eventName: cloudTrailEvent.eventName,
+                eventSource: cloudTrailEvent.eventSource,
+                awsRegion: cloudTrailEvent.cloudTrailEvent.awsRegion,
+                timestamp: cloudTrailEvent.eventTime,
+                userIdentity: cloudTrailEvent.cloudTrailEvent.userIdentity,
+                eventDetails: JSON.stringify(cloudTrailEvent.cloudTrailEvent),
+            });
+            this.securityEventRepository.save(securityEvent);
+        }
     }
 };
 exports.CloudTrailService = CloudTrailService;
 exports.CloudTrailService = CloudTrailService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(cloudTrail_entity_1.CloudTrailEvent)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(security_event_entity_1.SecurityEvent)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], CloudTrailService);
 //# sourceMappingURL=cloud-trail.service.js.map
