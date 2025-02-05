@@ -7,6 +7,7 @@ import { SecurityEvent } from './security-events/security-event.entity';
 //import { AwsSecurityService } from './security-events/aws-security/aws-security.service';
 //import { AwsSecurityController } from './security-events/aws-security/aws-security.controller';
 import { AwsSecurityModule } from './security-events/aws-security/aws-security.module';
+import { CloudTrailService } from './cloud-trail/cloud-trail.service';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { AwsSecurityModule } from './security-events/aws-security/aws-security.m
     AwsSecurityModule, // Registering the security event entity
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CloudTrailService],
 })
 export class AppModule {}
