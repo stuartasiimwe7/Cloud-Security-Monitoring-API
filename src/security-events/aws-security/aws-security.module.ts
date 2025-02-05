@@ -4,7 +4,6 @@ import { AwsSecurityService } from './aws-security.service';
 import { AwsSecurityController } from './aws-security.controller';
 import { SecurityEvent } from '../security-event.entity'; // Import the SecurityEvent entity
 import { AwsCloudTrailService } from './aws-cloudtrail.service'; // Import the AwsCloudTrailService
-import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common'; // Import the necessary decorators
 
 @Module({
   imports: [TypeOrmModule.forFeature([SecurityEvent])], // Required for repository injection
