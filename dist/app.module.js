@@ -14,7 +14,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const security_event_entity_1 = require("./security-events/security-event.entity");
 const aws_security_module_1 = require("./security-events/aws-security/aws-security.module");
-const cloud_trail_service_1 = require("./cloud-trail/cloud-trail.service");
+const cloud_trail_module_1 = require("./cloud-trail/cloud-trail.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,11 +34,12 @@ exports.AppModule = AppModule = __decorate([
                     synchronize: true,
                 }),
             }),
-            typeorm_1.TypeOrmModule.forFeature([security_event_entity_1.SecurityEvent]),
+            typeorm_1.TypeOrmModule.forFeature([security_event_entity_1.SecurityEvent, cloud_trail_module_1.CloudTrailModule]),
             aws_security_module_1.AwsSecurityModule,
+            cloud_trail_module_1.CloudTrailModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, cloud_trail_service_1.CloudTrailService],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

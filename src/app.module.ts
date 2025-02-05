@@ -4,10 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SecurityEvent } from './security-events/security-event.entity';
-//import { AwsSecurityService } from './security-events/aws-security/aws-security.service';
-//import { AwsSecurityController } from './security-events/aws-security/aws-security.controller';
 import { AwsSecurityModule } from './security-events/aws-security/aws-security.module';
-import { CloudTrailService } from './cloud-trail/cloud-trail.service';
+//import { CloudTrailService } from './cloud-trail/cloud-trail.service';
+import {CloudTrailModule} from './cloud-trail/cloud-trail.module';
 
 @Module({
   imports: [
@@ -24,10 +23,11 @@ import { CloudTrailService } from './cloud-trail/cloud-trail.service';
         synchronize: true, // Auto-syncs DB schema (disable in production)
       }),
     }),
-    TypeOrmModule.forFeature([SecurityEvent]),
+    TypeOrmModule.forFeature([SecurityEvent, CloudTrailModule]), // Registering the security event entity
     AwsSecurityModule, // Registering the security event entity
+    CloudTrailModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudTrailService],
+  providers: [AppService],
 })
 export class AppModule {}
