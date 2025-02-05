@@ -10,4 +10,9 @@ export class AwsSecurityController {
         await this.awsSecurityService.fetchCloudTrailEvents();
         return { message: 'Fetching CloudTrail events...' };
   }
+
+  @Get('events')
+  async getEvents() {
+    return /*await*/ this.awsSecurityService.getRecentEvents();
+  }
 }
