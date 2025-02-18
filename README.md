@@ -17,7 +17,7 @@ This project is a Cloud Security Monitoring API built with TypeScript and NestJS
 ## Installation
 Clone the repository:
 ```bash
-git clone https://github.com/yourusername/cloud-security-monitoring-api.git
+git clone https://github.com/stuartasiimwe7/cloud-security-monitoring-api.git
 cd cloud-security-monitoring-api
 ```
 Install dependencies:
