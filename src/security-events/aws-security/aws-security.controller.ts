@@ -1,4 +1,5 @@
 import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { GetDbEventsDto } from './dto/get-db-events.dto';
 import { AwsSecurityService } from './aws-security.service';
 import { AwsCloudTrailService } from './aws-cloudtrail.service';
 
@@ -32,31 +33,17 @@ export class AwsSecurityController {
     }
 
     @Get('db-events')
-    async getDbEvents(
-        @Query('eventSource') eventSource?: string,
-        @Query('eventName') eventName?: string,
-        @Query('awsRegion') awsRegion?: string,
-        @Query('from') from?: string,
-        @Query('to') to?: string,
-        @Query('limit') limit?: string,
-        @Query('offset') offset?: string,
-        @Query('order') order?: 'ASC' | 'DESC',
-    ) {
+    async getDbEvents(@Query() query: GetDbEventsDto) {
         try {
-            const parsedFrom = from ? new Date(from) : undefined;
-            const parsedTo = to ? new Date(to) : undefined;
-            const parsedLimit = limit ? parseInt(limit, 10) : undefined;
-            const parsedOffset = offset ? parseInt(offset, 10) : undefined;
-
             const result = await this.awsSecurityService.findSecurityEvents({
-                eventSource,
-                eventName,
-                awsRegion,
-                from: parsedFrom,
-                to: parsedTo,
-                limit: parsedLimit,
-                offset: parsedOffset,
-                order,
+                eventSource: query.eventSource,
+                eventName: query.eventName,
+                awsRegion: query.awsRegion,
+                from: query.from ? new Date(query.from) : undefined,
+                to: query.to ? new Date(query.to) : undefined,
+                limit: query.limit,
+                offset: query.offset,
+                order: query.order,
             });
             return result;
         } catch (error) {
