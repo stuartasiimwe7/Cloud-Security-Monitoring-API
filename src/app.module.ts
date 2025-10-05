@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { SecurityEvent } from './security-events/security-event.entity';
 import { AwsSecurityModule } from './security-events/aws-security/aws-security.module';
 import {CloudTrailModule} from './cloud-trail/cloud-trail.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {CloudTrailModule} from './cloud-trail/cloud-trail.module';
     TypeOrmModule.forFeature([SecurityEvent]),
     AwsSecurityModule,
     CloudTrailModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

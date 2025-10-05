@@ -1,7 +1,8 @@
-import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { GetDbEventsDto } from './dto/get-db-events.dto';
 import { AwsSecurityService } from './aws-security.service';
 import { AwsCloudTrailService } from './aws-cloudtrail.service';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('aws-security')
 export class AwsSecurityController {
@@ -10,6 +11,7 @@ export class AwsSecurityController {
         private readonly awsCloudTrailService: AwsCloudTrailService
     ) {}
 
+    @UseGuards(JwtAuthGuard)
     @Get('fetch-events')
     async fetchCloudTrailEvents() {
         try {
@@ -21,6 +23,7 @@ export class AwsSecurityController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('events')
     async getEvents() {
         try {
@@ -32,6 +35,7 @@ export class AwsSecurityController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('db-events')
     async getDbEvents(@Query() query: GetDbEventsDto) {
         try {
