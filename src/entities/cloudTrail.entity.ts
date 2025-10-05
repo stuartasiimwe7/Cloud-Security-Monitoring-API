@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity('cloudtrail_events') // table name
+@Entity('cloudtrail_events')
 export class CloudTrailEvent {
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,9 +20,9 @@ export class CloudTrailEvent {
   @Column()
   username: string;
 
-  @Column({ type: 'jsonb' }) // jsonb for PostgreSQL
+  @Column({ type: 'jsonb' })
   cloudTrailEvent: any;
 
   @CreateDateColumn()
-  receivedAt: Date; // Timestamp of when we received it
+  receivedAt: Date;
 }

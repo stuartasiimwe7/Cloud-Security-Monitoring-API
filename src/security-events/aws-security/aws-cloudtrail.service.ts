@@ -18,7 +18,7 @@ export class AwsCloudTrailService {
 
   async getRecentSecurityEvents() {
     const command = new LookupEventsCommand({
-      MaxResults: 10, // Fetch the 10 most recent events
+      MaxResults: 10,
     });
 
     try {

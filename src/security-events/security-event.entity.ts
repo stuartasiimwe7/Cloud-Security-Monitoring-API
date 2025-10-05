@@ -15,9 +15,9 @@ export class SecurityEvent {
     awsRegion: string;
 
     @Column()
-    timestamp: Date;  // Event timestamp
+    timestamp: Date;
 
-    @Column({ type: 'jsonb' }) // Structured identity info
+    @Column({ type: 'jsonb' })
     userIdentity: any;
 
     @Column('text')
