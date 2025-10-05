@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { SecurityEvent } from './security-events/security-event.entity';
 import { AwsSecurityModule } from './security-events/aws-security/aws-security.module';
 import {CloudTrailModule} from './cloud-trail/cloud-trail.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
