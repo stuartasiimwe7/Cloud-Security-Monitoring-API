@@ -6,7 +6,7 @@ import { AwsCloudTrailService } from './aws-cloudtrail.service';
 export class AwsSecurityController {
     constructor(
         private readonly awsSecurityService: AwsSecurityService,
-        private readonly awsCloudTrailService: AwsCloudTrailService // Inject AwsCloudTrailService
+        private readonly awsCloudTrailService: AwsCloudTrailService
     ) {}
 
     @Get('fetch-events')

@@ -3,15 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudTrailEvent } from '../entities/cloudTrail.entity';
 import { CloudTrailService } from './cloud-trail.service';
 import { CloudTrailController } from './cloud-trail.controller';
-import { SecurityEvent } from '../security-events/security-event.entity';  // Import the SecurityEvent entity
+import { SecurityEvent } from '../security-events/security-event.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CloudTrailEvent, SecurityEvent]), // Add the SecurityEvent entity to the imports
-  
+    TypeOrmModule.forFeature([CloudTrailEvent, SecurityEvent]),
   ], 
-  providers: [CloudTrailService], // Add the SecurityEventRepository to the providers
+  providers: [CloudTrailService],
   controllers: [CloudTrailController],
-  exports: [CloudTrailService], // Export the service if needed in another module
+  exports: [CloudTrailService],
 })
 export class CloudTrailModule {}
