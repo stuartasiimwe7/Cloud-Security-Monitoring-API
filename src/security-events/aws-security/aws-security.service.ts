@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SecurityEvent } from '../security-event.entity';
 import { CloudTrailClient, LookupEventsCommand, LookupEventsCommandInput } from "@aws-sdk/client-cloudtrail";
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
@@ -51,6 +52,16 @@ export class AwsSecurityService {
     const command = new LookupEventsCommand({ /*MaxResults: 5*/ });
     const response = await this.cloudTrailClient.send(command);
     return response.Events;
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async scheduledIngest() {
+    try {
+      await this.fetchCloudTrailEvents();
+      this.logger.log('Scheduled CloudTrail ingestion completed.');
+    } catch (e) {
+      this.logger.error('Scheduled CloudTrail ingestion failed', e as Error);
+    }
   }
 
   async findSecurityEvents(options: {
