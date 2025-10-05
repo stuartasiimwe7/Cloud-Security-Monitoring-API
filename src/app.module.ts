@@ -23,7 +23,7 @@ import {CloudTrailModule} from './cloud-trail/cloud-trail.module';
         synchronize: true, // Auto-syncs DB schema (disable in production)
       }),
     }),
-    TypeOrmModule.forFeature([SecurityEvent, CloudTrailModule]), // Registering the security event entity
+    TypeOrmModule.forFeature([SecurityEvent]), // Register only entities here
     AwsSecurityModule, // Registering the security event entity
     CloudTrailModule,
   ],
