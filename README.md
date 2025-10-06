@@ -92,6 +92,47 @@ curl -H "Authorization: Bearer $(cat token.txt)" "http://localhost:3000/aws-secu
 - **Cloud SDKs**: AWS SDK (CloudTrail, IAM)
 - **Database**: PostgreSQL
 
+## Installation
+Clone the repository:
+```bash
+git clone https://github.com/stuartasiimwe7/cloud-security-monitoring-api.git
+cd cloud-security-monitoring-api
+```
+Install dependencies:
+```bash
+npm install
+```
+Configure environment variables: Create a `.env` file in the root of the project and add the following:
+```plaintext
+DATABASE_URL=postgres://user:pass@localhost:5432/cloudsec
+AWS_REGION=us-east-1
+JWT_SECRET=change_me
+# Optional if you are not using an AWS profile/SSO
+# AWS_ACCESS_KEY_ID=...
+# AWS_SECRET_ACCESS_KEY=...
+```
+Start the application:
+```bash
+npm run start
+```
+
+## Usage
+Get a JWT (dev token):
+```bash
+POST /auth/dev-token
+```
+Ingest recent CloudTrail events to the database:
+```bash
+GET /aws-security/fetch-events
+```
+Fetch recent events directly from AWS (passthrough):
+```bash
+GET /aws-security/events
+```
+Query stored events with filters/pagination:
+```bash
+GET /aws-security/db-events?limit=20&eventSource=signin.amazonaws.com
+```
 
 ## Contribution
 Contributions are welcome! Please open an [issue](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/issues) or submit a [pull request](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/pulls).
