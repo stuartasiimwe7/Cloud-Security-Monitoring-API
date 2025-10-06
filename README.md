@@ -1,5 +1,19 @@
 ## Overview
 
+[![CI](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml/badge.svg)](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml)
+
+Quick curl
+```bash
+# token
+TOKEN=$(curl -s -X POST http://localhost:3000/auth/dev-token | jq -r .access_token)
+
+# ingest
+curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/aws-security/fetch-events
+
+# query stored
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/aws-security/db-events?limit=20"
+```
+
 ### Background
 - Cloud environments generate high-volume, high-velocity activity logs (for example, AWS CloudTrail) across many accounts and regions.
 - Security teams struggle to normalise, store, and query these events quickly for incident response, compliance, and threat detection.

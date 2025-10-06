@@ -1,0 +1,43 @@
+{
+  "info": {
+    "name": "Cloud Security Monitoring API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth / dev-token",
+      "request": { "method": "POST", "url": "http://localhost:3000/auth/dev-token" }
+    },
+    {
+      "name": "AWS / fetch-events",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": "http://localhost:3000/aws-security/fetch-events"
+      }
+    },
+    {
+      "name": "AWS / events (live)",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": "http://localhost:3000/aws-security/events"
+      }
+    },
+    {
+      "name": "AWS / db-events",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": {
+          "raw": "http://localhost:3000/aws-security/db-events?limit=20",
+          "host": ["http://localhost:3000"],
+          "path": ["aws-security","db-events"],
+          "query": [ { "key": "limit", "value": "20" } ]
+        }
+      }
+    }
+  ],
+  "variable": [ { "key": "token", "value": "" } ]
+}
+
