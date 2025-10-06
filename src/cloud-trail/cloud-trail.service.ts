@@ -14,13 +14,23 @@ export class CloudTrailService {
     private securityEventRepository: Repository<SecurityEvent>,
   ) {}
 
-  async saveEvent(eventData: any): Promise<CloudTrailEvent> {
+  async saveEvent(eventData: Record<string, unknown>): Promise<CloudTrailEvent> {
+    const getString = (value: unknown, fallback = ''): string =>
+      typeof value === 'string' && value.length > 0 ? value : fallback;
+
+    const eventId = getString((eventData as any).eventID) || getString((eventData as any).EventId);
+    const eventSource = getString((eventData as any).eventSource) || getString((eventData as any).EventSource);
+    const eventName = getString((eventData as any).eventName) || getString((eventData as any).EventName);
+    const username = getString((eventData as any).Username) || getString((eventData as any).userIdentity?.userName, 'Unknown');
+    const eventTimeRaw = (eventData as any).eventTime || (eventData as any).EventTime;
+    const eventTime = eventTimeRaw ? new Date(eventTimeRaw as string) : new Date();
+
     const cloudTrailEvent = this.cloudTrailEventRepository.create({
-      eventId: eventData.eventID || eventData.EventId,
-      eventTime: new Date(eventData.eventTime || eventData.EventTime),
-      eventSource: eventData.eventSource || eventData.EventSource,
-      eventName: eventData.eventName || eventData.EventName,
-      username: eventData.Username || eventData.userIdentity?.userName || 'Unknown',
+      eventId,
+      eventTime,
+      eventSource,
+      eventName,
+      username,
       cloudTrailEvent: eventData,
     });
     const savedCloudTrailEvent = await this.cloudTrailEventRepository.save(cloudTrailEvent);
@@ -41,12 +51,12 @@ export class CloudTrailService {
       const securityEvent = this.securityEventRepository.create({
         eventName: cloudTrailEvent.eventName,
         eventSource: cloudTrailEvent.eventSource,
-        awsRegion: cloudTrailEvent.cloudTrailEvent.awsRegion,
+        awsRegion: (cloudTrailEvent.cloudTrailEvent as any)?.awsRegion,
         timestamp: cloudTrailEvent.eventTime,
-        userIdentity: cloudTrailEvent.cloudTrailEvent.userIdentity,
+        userIdentity: (cloudTrailEvent.cloudTrailEvent as any)?.userIdentity,
         eventDetails: JSON.stringify(cloudTrailEvent.cloudTrailEvent),
       });
-      this.securityEventRepository.save(securityEvent);
+      void this.securityEventRepository.save(securityEvent);
     }
 }
 }

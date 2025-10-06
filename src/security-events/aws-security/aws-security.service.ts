@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { SecurityEvent } from '../security-event.entity';
 import { CloudTrailClient, LookupEventsCommand, LookupEventsCommandInput } from "@aws-sdk/client-cloudtrail";
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { FindOptionsWhere } from 'typeorm';
+// import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class AwsSecurityService {
@@ -26,17 +26,17 @@ export class AwsSecurityService {
       for (const event of data.Events || []) {
         const eventName = event.EventName || 'Unknown';
         const eventSource = event.EventSource || 'Unknown';
-        const awsRegion = (event as any).AwsRegion || process.env.AWS_REGION || 'unknown';
+        const awsRegion = ((event as unknown as { AwsRegion?: string }).AwsRegion) || process.env.AWS_REGION || 'unknown';
 
         const rawDetails = event.CloudTrailEvent || '{}';
-        const parsedDetails = typeof rawDetails === 'string' ? JSON.parse(rawDetails) : rawDetails;
+        const parsedDetails: any = typeof rawDetails === 'string' ? JSON.parse(rawDetails) : rawDetails;
 
         await this.securityEventRepo.save({
           eventName,
           eventSource,
           awsRegion,
           timestamp: event.EventTime ? new Date(event.EventTime) : new Date(),
-          userIdentity: parsedDetails.userIdentity || {},
+          userIdentity: parsedDetails?.userIdentity || {},
           eventDetails: typeof rawDetails === 'string' ? rawDetails : JSON.stringify(rawDetails),
         });
       }

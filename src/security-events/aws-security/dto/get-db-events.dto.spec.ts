@@ -18,7 +18,7 @@ describe('GetDbEventsDto', () => {
   });
 
   it('rejects invalid order', async () => {
-    const dto = plainToInstance(GetDbEventsDto, { order: 'DOWN' as any });
+    const dto = plainToInstance(GetDbEventsDto, { order: 'DOWN' as unknown as 'ASC' });
     const errors = await validate(dto);
     expect(errors.length).toBeGreaterThan(0);
   });
