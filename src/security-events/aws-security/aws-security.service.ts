@@ -30,13 +30,14 @@ export class AwsSecurityService {
 
         const rawDetails = event.CloudTrailEvent || '{}';
         const parsedDetails: Record<string, unknown> = typeof rawDetails === 'string' ? JSON.parse(rawDetails) : (rawDetails as Record<string, unknown>);
+        const userIdentity = (typeof parsedDetails['userIdentity'] === 'object' && parsedDetails['userIdentity'] !== null) ? parsedDetails['userIdentity'] : {};
 
         await this.securityEventRepo.save({
           eventName,
           eventSource,
           awsRegion,
           timestamp: event.EventTime ? new Date(event.EventTime) : new Date(),
-          userIdentity: (parsedDetails as { userIdentity?: unknown })?.userIdentity ?? {},
+          userIdentity: userIdentity,
           eventDetails: typeof rawDetails === 'string' ? rawDetails : JSON.stringify(rawDetails),
         });
       }

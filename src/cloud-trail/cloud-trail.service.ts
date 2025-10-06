@@ -15,17 +15,26 @@ export class CloudTrailService {
   ) {}
 
   async saveEvent(eventData: Record<string, unknown>): Promise<CloudTrailEvent> {
-    const getString = (value: unknown, fallback = ''): string =>
-      typeof value === 'string' && value.length > 0 ? value : fallback;
+    const getString = (obj: Record<string, unknown>, key: string): string => {
+      const v = obj[key];
+      return typeof v === 'string' ? v : '';
+    };
+    const getDate = (obj: Record<string, unknown>, keys: string[]): Date | undefined => {
+      for (const k of keys) {
+        const v = obj[k];
+        if (typeof v === 'string' || typeof v === 'number') return new Date(v);
+      }
+      return undefined;
+    };
 
-    const data = eventData as Record<string, unknown> & { userIdentity?: { userName?: string } };
+    const data = eventData as Record<string, unknown>;
+    const userIdentity = (typeof data['userIdentity'] === 'object' && data['userIdentity'] !== null ? data['userIdentity'] as Record<string, unknown> : undefined);
+    const username = getString(data, 'Username') || (userIdentity ? getString(userIdentity, 'userName') : '');
 
-    const eventId = getString(data.eventID) || getString((data as any).EventId);
-    const eventSource = getString(data.eventSource) || getString((data as any).EventSource);
-    const eventName = getString(data.eventName) || getString((data as any).EventName);
-    const username = getString((data as any).Username) || getString(data.userIdentity?.userName, 'Unknown');
-    const eventTimeRaw = (data as any).eventTime || (data as any).EventTime;
-    const eventTime = eventTimeRaw ? new Date(eventTimeRaw as string) : new Date();
+    const eventId = getString(data, 'eventID') || getString(data, 'EventId');
+    const eventSource = getString(data, 'eventSource') || getString(data, 'EventSource');
+    const eventName = getString(data, 'eventName') || getString(data, 'EventName');
+    const eventTime = getDate(data, ['eventTime','EventTime']) ?? new Date();
 
     const cloudTrailEvent = this.cloudTrailEventRepository.create({
       eventId,
