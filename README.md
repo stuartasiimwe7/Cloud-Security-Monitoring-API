@@ -1,54 +1,97 @@
 ## Overview
-This project is a Cloud Security Monitoring API built with TypeScript and NestJS. It fetches security logs from AWS CloudTrail, IAM, and Config, and stores them in PostgreSQL. The API exposes endpoints for retrieving security violations and includes JWT authentication for secure access. Additionally, it features a Grafana dashboard for cloud security analytics.
 
+### Background
+- Cloud environments generate high-volume, high-velocity activity logs (for example, AWS CloudTrail) across many accounts and regions.
+- Security teams struggle to normalise, store, and query these events quickly for incident response, compliance, and threat detection.
+- Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-first way to ingest and surface security-relevant events.
+
+### Task
+- Build a lightweight, API-driven service to ingest AWS CloudTrail events, persist security-relevant records, and expose them via standardised endpoints.
+- Provide a foundation that can expand to other security sources (IAM, AWS Config) and integrate with dashboards/alerting.
+- Keep it developer-friendly (NestJS/TypeScript), operationally simple (PostgreSQL + TypeORM), and secure-by-default.
+
+### Workflow
+- Implemented a NestJS service with two main modules:
+  - `AwsSecurity`: fetches recent CloudTrail events and persists normalised `security_events` to PostgreSQL; serves APIs to fetch events.
+  - `CloudTrail`: accepts event payloads for testing and filters them into `security_events` when matching security criteria (e.g., `ConsoleLogin`, `CreateUser`, `iam` sources).
+- Defined normalised entities:
+  - `SecurityEvent` (`jsonb` `userIdentity`, `eventDetails`).
+  - `CloudTrailEvent` for raw event capture and parity checks.
+- Uses AWS SDK v3 to query CloudTrail; TypeORM to persist; `ConfigModule` for environment-based configuration.
+- Exposed REST endpoints:
+  - `GET /aws-security/fetch-events`: pull and store recent CloudTrail activity.
+  - `GET /aws-security/events`: read recent events directly from AWS.
+  - `GET /aws-security/db-events`: query stored events with filters/pagination.
+  - `POST /cloudtrail/test`: save provided event payload and auto-flag security-relevant ones.
+- Added JWT auth (Bearer) for non-health endpoints and global validation.
+- Added scheduled ingestion (every 10 minutes) to persist CloudTrail events.
+
+### Result
+- An API-first security monitoring layer that:
+  - Centralizes CloudTrail events in PostgreSQL for fast querying and correlation.
+  - Normalises and highlights security-relevant activity for triage and investigations.
+  - Provides clear extension points for adding IAM/Config feeds, dashboards, auth, and metrics.
+- Expected impact:
+  - Faster incident response.
+  - Easier compliance evidence since now we have an auditable event store.
+  - Lower operational complexity vs. heavy SIEM ingestion for targeted AWS signals.
+
+---
+
+## Quickstart
+
+### Requirements
+- Node 18, npm 9+
+- PostgreSQL (local or RDS)
+- AWS credentials with CloudTrail `LookupEvents`
+
+### Environment
+Set env vars (local example):
+```bash
+export DATABASE_URL="postgres://user:pass@localhost:5432/cloudsec"
+export AWS_REGION="us-east-1"
+export JWT_SECRET="change_me"
+# If not using an instance/profile then :
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+```
+
+### Run
+```bash
+npm install
+npm run start:dev
+```
+
+### Auth and sample calls
+```bash
+# Get a token
+curl -s -X POST http://localhost:3000/auth/dev-token | jq -r .access_token > token.txt
+
+# Ingest recent CloudTrail events to DB
+curl -H "Authorization: Bearer $(cat token.txt)" http://localhost:3000/aws-security/fetch-events
+
+# Query stored events (DB)
+curl -H "Authorization: Bearer $(cat token.txt)" "http://localhost:3000/aws-security/db-events?limit=20&eventSource=signin.amazonaws.com"
+```
+
+---
+
+## CI / CD
+- CI: installs, lints, builds, and tests (with Postgres) on pull requests.
+- CD: optional ECR/ECS workflow.
+
+---
 ## Features
-- **Security Event API**: Fetch security logs from AWS CloudTrail, IAM, and Config.
-- **Log Storage**: Store logs in PostgreSQL (or MongoDB).
+- **Security Event API**: Fetch security logs from AWS CloudTrail (to be extended for IAM, and Config).
+- **Log Storage**: Store logs in PostgreSQL.
 - **REST API**: Expose endpoints to fetch security violations.
-- **Analytics Dashboard**: Visualize security events using Grafana.
 - **JWT Authentication**: Secure access to the API.
 
 ## Tech Stack
 - **Backend**: TypeScript + NestJS
 - **Cloud SDKs**: AWS SDK (CloudTrail, IAM)
 - **Database**: PostgreSQL
-- **Logging**: Prometheus + Grafana
 
-## Installation
-Clone the repository:
-```bash
-git clone https://github.com/stuartasiimwe7/cloud-security-monitoring-api.git
-cd cloud-security-monitoring-api
-```
-Install dependencies:
-```bash
-npm install
-```
-Configure environment variables: Create a `.env` file in the root of the project and add the following:
-```plaintext
-AWS_ACCESS_KEY_ID=your_aws_access_key_id
-AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-```
-Start the application:
-```bash
-npm run start
-```
-
-## Usage
-Fetch CloudTrail Logs:
-```bash
-GET /security-logs/cloudtrail
-```
-Fetch IAM Logs:
-```bash
-GET /security-logs/iam
-```
-Fetch Config Logs:
-```bash
-GET /security-logs/config
-```
 
 ## Contribution
 Contributions are welcome! Please open an [issue](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/issues) or submit a [pull request](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/pulls).
