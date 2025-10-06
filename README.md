@@ -1,18 +1,4 @@
-## Overview
-
-[![CI](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml/badge.svg)](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml)
-
-Quick curl
-```bash
-# token
-TOKEN=$(curl -s -X POST http://localhost:3000/auth/dev-token | jq -r .access_token)
-
-# ingest
-curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/aws-security/fetch-events
-
-# query stored
-curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/aws-security/db-events?limit=20"
-```
+## Overview [![CI](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml/badge.svg)](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml)
 
 ### Background
 - Cloud environments generate high-volume, high-velocity activity logs (for example, AWS CloudTrail) across many accounts and regions.
@@ -32,13 +18,13 @@ curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/aws-security/db-ev
   - `SecurityEvent` (`jsonb` `userIdentity`, `eventDetails`).
   - `CloudTrailEvent` for raw event capture and parity checks.
 - Uses AWS SDK v3 to query CloudTrail; TypeORM to persist; `ConfigModule` for environment-based configuration.
-- Exposed REST endpoints:
-  - `GET /aws-security/fetch-events`: pull and store recent CloudTrail activity.
-  - `GET /aws-security/events`: read recent events directly from AWS.
-  - `GET /aws-security/db-events`: query stored events with filters/pagination.
-  - `POST /cloudtrail/test`: save provided event payload and auto-flag security-relevant ones.
-- Added JWT auth (Bearer) for non-health endpoints and global validation.
-- Added scheduled ingestion (every 10 minutes) to persist CloudTrail events.
+- REST endpoints:
+  - `GET /aws-security/fetch-events`
+  - `GET /aws-security/events`
+  - `GET /aws-security/db-events`
+  - `POST /cloudtrail/test`
+- There's WT auth for non-health endpoints and global validation.
+- There's scheduled ingestion (every 10 minutes) to persist CloudTrail events.
 
 ### Result
 - An API-first security monitoring layer that:
@@ -106,7 +92,21 @@ curl -H "Authorization: Bearer $(cat token.txt)" "http://localhost:3000/aws-secu
 - **Cloud SDKs**: AWS SDK (CloudTrail, IAM)
 - **Database**: PostgreSQL
 
-## Installation
+## Want to replicate?
+
+Quick curl
+```bash
+# token
+TOKEN=$(curl -s -X POST http://localhost:3000/auth/dev-token | jq -r .access_token)
+
+# ingest
+curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/aws-security/fetch-events
+
+# query stored
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/aws-security/db-events?limit=20"
+```
+### Installation
+
 Clone the repository:
 ```bash
 git clone https://github.com/stuartasiimwe7/cloud-security-monitoring-api.git
