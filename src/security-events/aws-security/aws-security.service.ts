@@ -29,14 +29,14 @@ export class AwsSecurityService {
         const awsRegion = ((event as unknown as { AwsRegion?: string }).AwsRegion) || process.env.AWS_REGION || 'unknown';
 
         const rawDetails = event.CloudTrailEvent || '{}';
-        const parsedDetails: Record<string, unknown> = typeof rawDetails === 'string' ? JSON.parse(rawDetails) : (rawDetails as any);
+        const parsedDetails: Record<string, unknown> = typeof rawDetails === 'string' ? JSON.parse(rawDetails) : (rawDetails as Record<string, unknown>);
 
         await this.securityEventRepo.save({
           eventName,
           eventSource,
           awsRegion,
           timestamp: event.EventTime ? new Date(event.EventTime) : new Date(),
-          userIdentity: (parsedDetails as any)?.userIdentity || {},
+          userIdentity: (parsedDetails as { userIdentity?: unknown })?.userIdentity ?? {},
           eventDetails: typeof rawDetails === 'string' ? rawDetails : JSON.stringify(rawDetails),
         });
       }

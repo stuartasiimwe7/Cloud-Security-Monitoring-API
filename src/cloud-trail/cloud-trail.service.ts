@@ -18,11 +18,13 @@ export class CloudTrailService {
     const getString = (value: unknown, fallback = ''): string =>
       typeof value === 'string' && value.length > 0 ? value : fallback;
 
-    const eventId = getString((eventData as any).eventID) || getString((eventData as any).EventId);
-    const eventSource = getString((eventData as any).eventSource) || getString((eventData as any).EventSource);
-    const eventName = getString((eventData as any).eventName) || getString((eventData as any).EventName);
-    const username = getString((eventData as any).Username) || getString((eventData as any).userIdentity?.userName, 'Unknown');
-    const eventTimeRaw = (eventData as any).eventTime || (eventData as any).EventTime;
+    const data = eventData as Record<string, unknown> & { userIdentity?: { userName?: string } };
+
+    const eventId = getString(data.eventID) || getString((data as any).EventId);
+    const eventSource = getString(data.eventSource) || getString((data as any).EventSource);
+    const eventName = getString(data.eventName) || getString((data as any).EventName);
+    const username = getString((data as any).Username) || getString(data.userIdentity?.userName, 'Unknown');
+    const eventTimeRaw = (data as any).eventTime || (data as any).EventTime;
     const eventTime = eventTimeRaw ? new Date(eventTimeRaw as string) : new Date();
 
     const cloudTrailEvent = this.cloudTrailEventRepository.create({
@@ -51,9 +53,9 @@ export class CloudTrailService {
       const securityEvent = this.securityEventRepository.create({
         eventName: cloudTrailEvent.eventName,
         eventSource: cloudTrailEvent.eventSource,
-        awsRegion: (cloudTrailEvent.cloudTrailEvent as any)?.awsRegion,
+        awsRegion: (cloudTrailEvent.cloudTrailEvent as Record<string, unknown>)?.['awsRegion'] as string,
         timestamp: cloudTrailEvent.eventTime,
-        userIdentity: (cloudTrailEvent.cloudTrailEvent as any)?.userIdentity,
+        userIdentity: (cloudTrailEvent.cloudTrailEvent as Record<string, unknown>)?.['userIdentity'] as unknown,
         eventDetails: JSON.stringify(cloudTrailEvent.cloudTrailEvent),
       });
       void this.securityEventRepository.save(securityEvent);

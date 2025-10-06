@@ -8,7 +8,7 @@ export class CloudTrailController {
 
   @UseGuards(JwtAuthGuard)
   @Post('test')
-  async testSaveEvent(@Body() eventData: any) {
+  async testSaveEvent(@Body() eventData: Record<string, unknown>) {
     const savedEvent = await this.cloudTrailService.saveEvent(eventData);
     return { message: 'Event saved!', savedEvent };
   }
