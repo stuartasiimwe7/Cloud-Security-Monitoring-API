@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "18.x"
+  },
   "name": "Cloud-Security-Monitoring-API",
   "version": "0.0.1",
   "description": "",
