@@ -1,9 +1,9 @@
 ## Overview [![CI](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml/badge.svg)](https://github.com/stuartasiimwe7/cloud-security-monitoring-api/actions/workflows/ci.yml)
+Cloud environments generate high-volume, high-velocity activity logs (for example, AWS CloudTrail) across many accounts and regions.
 
-### Background
-- Cloud environments generate high-volume, high-velocity activity logs (for example, AWS CloudTrail) across many accounts and regions.
-- Security teams struggle to normalise, store, and query these events quickly for incident response, compliance, and threat detection.
-- Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-first way to ingest and surface security-relevant events.
+Security teams struggle to normalise, store, and query these events quickly for incident response, compliance, and threat detection.
+
+Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-first way to ingest and surface security-relevant events.
 
 ### Task
 - Build a lightweight, API-driven service to ingest AWS CloudTrail events, persist security-relevant records, and expose them via standardised endpoints.
