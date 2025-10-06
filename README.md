@@ -77,8 +77,8 @@ curl -H "Authorization: Bearer $(cat token.txt)" "http://localhost:3000/aws-secu
 ---
 
 ## CI / CD
-- CI: installs, lints, builds, and tests (with Postgres) on pull requests.
-- CD: optional ECR/ECS workflow.
+- **CI**: installs, lints, builds, and tests (with Postgres) on pull requests and pushes to main
+- **CD**: builds and pushes Docker images to GitHub Container Registry (GHCR) on releases
 
 ---
 ## Features
