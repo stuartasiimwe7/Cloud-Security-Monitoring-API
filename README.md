@@ -3,10 +3,10 @@ Cloud environments generate high-volume, high-velocity activity logs (for exampl
 
 Security teams struggle to normalise, store, and query these events quickly for incident response, compliance, and threat detection.
 
-Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-first way to ingest and surface security-relevant events.
+Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-first way to collect and surface security‑relevant events.
 
 ### Task
-- Build a lightweight, API-driven service to ingest AWS CloudTrail events, persist security-relevant records, and expose them via standardised endpoints.
+- Build a lightweight, API-driven service to pull AWS CloudTrail events, persist security-relevant records, and expose them via standardised endpoints.
 - Provide a foundation that can expand to other security sources (IAM, AWS Config) and integrate with dashboards/alerting.
 - Keep it developer-friendly (NestJS/TypeScript), operationally simple (PostgreSQL + TypeORM), and secure-by-default.
 
@@ -24,7 +24,7 @@ Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-fir
   - `GET /aws-security/db-events`
   - `POST /cloudtrail/test`
 - There's WT auth for non-health endpoints and global validation.
-- There's scheduled ingestion (every 10 minutes) to persist CloudTrail events.
+- There's a scheduled job (every 10 minutes) to fetch and persist CloudTrail events.
 
 ### Result
 - An API-first security monitoring layer that:
@@ -34,7 +34,7 @@ Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-fir
 - Expected impact:
   - Faster incident response.
   - Easier compliance evidence since now we have an auditable event store.
-  - Lower operational complexity vs. heavy SIEM ingestion for targeted AWS signals.
+  - Lower operational complexity vs. heavy SIEM pipelines for targeted AWS signals.
 
 ---
 
@@ -67,7 +67,7 @@ npm run start:dev
 # Get a token
 curl -s -X POST http://localhost:3000/auth/dev-token | jq -r .access_token > token.txt
 
-# Ingest recent CloudTrail events to DB
+# Pull recent CloudTrail events to DB
 curl -H "Authorization: Bearer $(cat token.txt)" http://localhost:3000/aws-security/fetch-events
 
 # Query stored events (DB)
@@ -99,7 +99,7 @@ Quick curl
 # token
 TOKEN=$(curl -s -X POST http://localhost:3000/auth/dev-token | jq -r .access_token)
 
-# ingest
+# pull
 curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/aws-security/fetch-events
 
 # query stored
@@ -135,7 +135,7 @@ Get a JWT (dev token):
 ```bash
 POST /auth/dev-token
 ```
-Ingest recent CloudTrail events to the database:
+Pull recent CloudTrail events to the database:
 ```bash
 GET /aws-security/fetch-events
 ```
