@@ -29,7 +29,9 @@ export class AwsSecurityService {
         const awsRegion = ((event as unknown as { AwsRegion?: string }).AwsRegion) || process.env.AWS_REGION || 'unknown';
 
         const rawDetails = event.CloudTrailEvent || '{}';
-        const parsedDetails: Record<string, unknown> = typeof rawDetails === 'string' ? JSON.parse(rawDetails) : (rawDetails as Record<string, unknown>);
+        const parsedDetails: Record<string, unknown> = typeof rawDetails === 'string'
+          ? (JSON.parse(rawDetails) as unknown as Record<string, unknown>)
+          : (rawDetails as Record<string, unknown>);
         const userIdentity = (typeof parsedDetails['userIdentity'] === 'object' && parsedDetails['userIdentity'] !== null) ? parsedDetails['userIdentity'] : {};
 
         await this.securityEventRepo.save({
