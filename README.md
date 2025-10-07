@@ -11,20 +11,20 @@ Existing SIEMs can be costly or slow to adapt; many orgs need a focused, API-fir
 - Keep it developer-friendly (NestJS/TypeScript), operationally simple (PostgreSQL + TypeORM), and secure-by-default.
 
 ### Workflow
-- Implemented a NestJS service with two main modules:
-  - `AwsSecurity`: fetches recent CloudTrail events and persists normalised `security_events` to PostgreSQL; serves APIs to fetch events.
-  - `CloudTrail`: accepts event payloads for testing and filters them into `security_events` when matching security criteria (e.g., `ConsoleLogin`, `CreateUser`, `iam` sources).
-- Defined normalised entities:
-  - `SecurityEvent` (`jsonb` `userIdentity`, `eventDetails`).
-  - `CloudTrailEvent` for raw event capture and parity checks.
-- Uses AWS SDK v3 to query CloudTrail; TypeORM to persist; `ConfigModule` for environment-based configuration.
-- REST endpoints:
-  - `GET /aws-security/fetch-events`
-  - `GET /aws-security/events`
-  - `GET /aws-security/db-events`
-  - `POST /cloudtrail/test`
-- There's WT auth for non-health endpoints and global validation.
-- There's a scheduled job (every 10 minutes) to fetch and persist CloudTrail events.
+1. Implemented a NestJS service with two main modules:
+   - `AwsSecurity`: fetches recent CloudTrail events and persists normalised `security_events` to PostgreSQL; serves APIs to fetch events.
+   - `CloudTrail`: accepts event payloads for testing and filters them into `security_events` when matching security criteria (e.g., `ConsoleLogin`, `CreateUser`, `iam` sources).
+2. Defined normalised entities:
+   - `SecurityEvent` (`jsonb` `userIdentity`, `eventDetails`).
+   - `CloudTrailEvent` for raw event capture and parity checks.
+3. Uses AWS SDK v3 to query CloudTrail; TypeORM to persist; `ConfigModule` for environment-based configuration.
+4. REST endpoints:
+   - `GET /aws-security/fetch-events`
+   - `GET /aws-security/events`
+   - `GET /aws-security/db-events`
+   - `POST /cloudtrail/test`
+5. JWT auth for non-health endpoints and global validation.
+6. A scheduled job (every 10 minutes) to fetch and persist CloudTrail events.
 
 ### Result
 - An API-first security monitoring layer that:
